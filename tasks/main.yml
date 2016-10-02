@@ -1,0 +1,73 @@
+---
+- name: Stop systemd service (failure is ok if its not installed or running yet)
+  shell: systemctl stop starbound
+  ignore_errors: yes
+  
+- name: Update CentOS
+  yum:
+    name: '*'
+    state: latest
+
+- name: Install yum epel repo
+  yum:
+    name: epel-release
+    
+- name: Install yum dependencies
+  yum:
+    name: 
+      - tmux
+      - htop
+      - libstdc++.i686
+      - libvorbis
+    
+- name: Ensure starbound group exists
+  group:
+    name: starbound
+
+- name: Ensure starbound user exists
+  user:
+    name: starbound
+    group: starbound
+
+- name: Ensure steamcmd directory exists
+  become_user: starbound
+  file:
+    path: /opt/steamcmd
+    state: directory
+
+- name: Install steamcmd
+  become_user: starbound
+  unarchive:
+    copy: no
+    src: "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
+    dest: /opt/steamcmd
+    creates: /opt/steamcmd/steamcmd.sh
+
+- name: Ensure starbound directory exists
+  become_user: starbound
+  file:
+    path: /opt/starbound
+    state: directory
+
+# check email for code if this is the first install on this server+user
+- name: Install/update starbound (this will fail if steamguard doesnt recognize the server)
+  become_user: starbound
+  shell: ./steamcmd.sh +login "{{ steam_user }}" "{{ steam_password }}" +force_install_dir /opt/starbound +app_update 211820 validate +quit
+    chdir=/opt/steamcmd
+
+- name: Copy starbound_server.config
+  copy:
+    src: "{{ config_file }}"
+    dest: /opt/starbound/storage/starbound_server.config
+  when: config_file is defined
+    
+- name: Copy systemd startup script
+  copy:
+    src: files/starbound.service
+    dest: /etc/systemd/system/starbound.service
+    
+- name: Enable systemd service
+  shell: systemctl enable starbound
+  
+- name: Start systemd service
+  shell: systemctl start starbound

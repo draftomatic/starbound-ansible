@@ -1,0 +1,9 @@
+---
+- name: Starbound Server (CentOS 7)
+  hosts: "{{ hosts }}"
+  become: yes
+  roles:
+    - ../starbound-ansible
+    
+    
+    

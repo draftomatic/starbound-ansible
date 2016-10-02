@@ -1,0 +1,13 @@
+[Unit]
+Description=Starbound Service
+After=network.target
+
+[Service]
+Type=simple
+User=starbound
+WorkingDirectory=/opt/starbound/linux
+ExecStart=/opt/starbound/linux/starbound_server
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
