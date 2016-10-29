@@ -6,9 +6,9 @@ Example playbook run:
 	
     ansible-playbook roles/starbound-ansible/main.yml -e "hosts=server1 steam_user=steamuser steam_password=abc123 config_file=files/starbound_server.config"
 
-`config_file` is optional and will copy a server configuration file. An example configuration file is in `files/starbound_server.config`. You should edit this file (such as changing the default admin password) before running.
+`config_file` is optional and will copy a server configuration file. An example configuration file is in `files/starbound_server.config`. You should edit this file (e.g., change the default admin password) before running. Starbound writes this file out when it runs, possibly with changes. It's not recommended to use this option for every run unless you know what you're doing.
 
-NOTE: The first time you log in with steamcmd (which this role does) from a new IP address, you will be sent an email with a verification code. This will cause this role to fail as it cannot enter the code. Log in to the server and run `/opt/steamcmd/steamcmd.sh +login myuser mypassword` to verify the machine, then re-run the role.
+NOTE: The first time you log in with steamcmd (which this role does) from a new IP address, you will be sent an email with a verification code. This will cause this role to fail as it cannot enter the code. Log in to the server and run `/opt/steamcmd/steamcmd.sh +login myuser mypassword` **as the starbound user** to verify the machine, then re-run the role.
 
 A [systemd](https://en.wikipedia.org/wiki/Systemd) service will be installed and enabled for the `starbound` user, which will start the starbound server on boot. 
 

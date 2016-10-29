@@ -30,10 +30,11 @@
     group: starbound
 
 - name: Ensure steamcmd directory exists
-  become_user: starbound
   file:
     path: /opt/steamcmd
     state: directory
+    owner: starbound
+    group: starbound
 
 - name: Install steamcmd
   become_user: starbound
@@ -44,10 +45,11 @@
     creates: /opt/steamcmd/steamcmd.sh
 
 - name: Ensure starbound directory exists
-  become_user: starbound
   file:
     path: /opt/starbound
     state: directory
+    owner: starbound
+    group: starbound
 
 # check email for code if this is the first install on this server+user
 - name: Install/update starbound (this will fail if steamguard doesnt recognize the server)
